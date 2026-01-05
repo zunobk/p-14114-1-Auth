@@ -40,8 +40,9 @@ public class ApiV1PostControllerTest {
 
         ResultActions resultActions = mvc
                 .perform(
-                        post("/api/v1/posts?apiKey=" + actorApiKey)
+                        post("/api/v1/posts")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header("Authorization", "Bearer " + actorApiKey)
                                 .content("""
                                         {
                                             "title": "제목",
