@@ -1,6 +1,5 @@
-package com.back.domain.post.member.member.controller;
+package com.back.domain.member.member.controller;
 
-import com.back.domain.member.member.controller.ApiV1MemberController;
 import com.back.domain.member.member.entity.Member;
 import com.back.domain.member.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
@@ -100,7 +99,7 @@ public class ApiV1MemberControllerTest {
                     Cookie apiKeyCookie = result.getResponse().getCookie("apiKey");
                     assertThat(apiKeyCookie.getValue()).isNotBlank();
                     assertThat(apiKeyCookie.getPath()).isEqualTo("/");
-                    assertThat(apiKeyCookie.getAttribute("HttpOnly")).isEqualTo("true");
+                    assertThat(apiKeyCookie.isHttpOnly()).isTrue();
                 }
         );
     }
