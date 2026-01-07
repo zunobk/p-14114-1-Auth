@@ -1,9 +1,8 @@
 package com.back.domain.member.member.service;
 
 import com.back.domain.member.member.entity.Member;
-import com.back.domain.member.member.service.AuthTokenService;
-import com.back.domain.member.member.service.MemberService;
 import com.back.standard.util.Ut;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,12 +69,13 @@ public class AuthTokenServiceTest {
         System.out.println("jwt = " + jwt);
 
         // 키가 유효한지 테스트
-        Map<String, Object> parsedPayload = (Map<String, Object>) Jwts
-                .parser()
+        Claims claims = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parse(jwt)
+                .parseSignedClaims(jwt)
                 .getPayload();
+
+        Map<String, Object> parsedPayload = new LinkedHashMap<>(claims);
 
         assertThat(parsedPayload)
                 .containsAllEntriesOf(payload);
@@ -91,7 +92,10 @@ public class AuthTokenServiceTest {
 
         assertThat(jwt).isNotBlank();
 
-        System.out.println("jwt = " + jwt);
+        assertThat(
+                Ut.jwt.isValid(secret, jwt)
+        )
+                .isTrue();
     }
 
     @Test
