@@ -23,6 +23,7 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         HttpMethod.GET,
                                         "/api/*/posts",
+                                        "/api/*/posts/{id:\\d+}",
                                         "/api/*/posts/{postId:\\d+}/comments",
                                         "/api/*/posts/{postId:\\d+}/comments/{id:\\d+}"
                                 ).permitAll()
