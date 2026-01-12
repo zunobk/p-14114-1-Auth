@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private final MemberService memberService;
     private final Rq rq;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,12 +42,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             RsData<Void> rsData = e.getRsData();
             response.setContentType("application/json");
             response.setStatus(rsData.statusCode());
-            response.getWriter().write("""
-                    {
-                        "resultCode": "%s",
-                        "msg": "%s"
-                    }
-                    """.formatted(rsData.resultCode(), rsData.msg()));
+            response.getWriter().write(
+                    objectMapper.writeValueAsString(rsData)
+            );
         } catch (Exception e) {
             throw e;
         }
