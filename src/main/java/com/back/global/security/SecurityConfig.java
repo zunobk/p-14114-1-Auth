@@ -15,13 +15,13 @@ public class SecurityConfig {
     private final CustomAuthenticationFilter customAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) {
         http
                 .authorizeHttpRequests(
-
                         auth -> auth
                                 .requestMatchers("/favicon.ico").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers("/api/*/adm/**").hasRole("ADMIN")
                                 .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -30,10 +30,12 @@ public class SecurityConfig {
                                 .frameOptions(
                                         HeadersConfigurer.FrameOptionsConfig::sameOrigin
                                 )
-                ).csrf(
+                )
+                .csrf(
                         AbstractHttpConfigurer::disable
                 )
                 .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
